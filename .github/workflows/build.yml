@@ -1,0 +1,22 @@
+name: Build
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-11, macos-12]
+
+    steps:
+    - name: Build and bottle
+      run: |
+        # Should be redundant:
+        # brew tap Cimbali/qt5-macx-arm64
+
+        brew install --build-bottle Cimbali/qt5-macx-arm64/qt5
+        brew bottle Cimbali/qt5-macx-arm64/qt5
+
+        ls
