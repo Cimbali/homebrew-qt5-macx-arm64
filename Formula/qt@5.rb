@@ -10,16 +10,6 @@ class QtAT5 < Formula
   license all_of: ["GFDL-1.3-only", "GPL-2.0-only", "GPL-3.0-only", "LGPL-2.1-only", "LGPL-3.0-only"]
   revision 2
 
-  bottle do
-    sha256 cellar: :any,                 arm64_ventura:  "80db845716cee249eb424670056138785c2ce8815f16a805520d2cce5dd7e6b4"
-    sha256 cellar: :any,                 arm64_monterey: "a979309fc71095a2e2064abb9fb97f92643a480a117e7a0860cbbdda8600f38e"
-    sha256 cellar: :any,                 arm64_big_sur:  "7842784e8190399194cac5b386a7e1a6266f5940f9ada7c6f16f20a4e755951d"
-    sha256 cellar: :any,                 ventura:        "25a85217b26196f477a11c677b4645e73d6a683190a793ebc1d0f20e1d6ba122"
-    sha256 cellar: :any,                 monterey:       "5ca03960f30417b2f64c9016a8a53d61a053d2ea419532ee32802ed77609f842"
-    sha256 cellar: :any,                 big_sur:        "48d913b8d27bf076e2dd85b441147e7205f85b182b7c7b56a104dd2075553374"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:   "311137d3eb328362cd12c33d361b32e922d53b3388cda0356463a9ea548e6d64"
-  end
-
   keg_only :versioned_formula
 
   depends_on "node"       => :build
@@ -134,6 +124,12 @@ class QtAT5 < Formula
     directory "qtbase"
   end
 
+  # Add mkspecs to enable macos-clang-arm64 cross-compilation
+  patch do
+    url "https://raw.githubusercontent.com/Cimbali/homebrew-qt5-macx-arm64/66f49e5afe65f40c08665e938019351f901b1518/patches/Adding-ARM64-cross-compilation-mkspecs-for-macOS.patch"
+    sha256 "7ab4c317e8042ac1da203c4fcb66417e7998f84a0d9cab95ecca490e2936df0d"
+  end
+
   def install
     rm_r "qtwebengine"
 
@@ -162,11 +158,30 @@ class QtAT5 < Formula
       -system-libpng
       -system-pcre
       -system-zlib
+      -platform macx-clang
+      -xplatform macx-clang-arm64
     ]
+
+    ##### Flags from bittorrent #####
+    # -static -appstore-compliant -c++std c++17
+    ## No pre-compiled headers
+    # -no-pch
+    ## Enable ssl support with a linked openssl
+    # -ssl -openssl-linked
+    ## Do not build D-Bus module
+    # -no-dbus
+    ## Disable CUPS/ICU support
+    # -no-icu -no-cups
+    ## Select Qt versions of libraries
+    # -qt-pcre -qt-libpng -qt-libjpeg
+    ## Disable features
+    # -no-feature-testlib -no-feature-concurrent
+    ## Build the libs
+    # -make libs
 
     if OS.mac?
       args << "-no-rpath"
-      args << "-no-assimp" if Hardware::CPU.arm?
+      args << "-no-assimp"
     else
       args << "-R#{lib}"
       # https://bugreports.qt.io/browse/QTBUG-71564
