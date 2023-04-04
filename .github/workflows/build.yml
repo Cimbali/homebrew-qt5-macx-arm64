@@ -11,6 +11,10 @@ jobs:
         os: [macos-11, macos-12]
 
     steps:
+    - name: Install dependencies
+      run: |
+        brew install llvm pkg-config pcre2 freetype jpeg libpng libtiff webp gettext glib giflib lz4 xz zstd openssl
+
     - name: Build and bottle
       run: |
         # Should be redundant:
