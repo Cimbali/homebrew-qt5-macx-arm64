@@ -15,7 +15,12 @@ jobs:
       run: |
         brew install llvm pkg-config pcre2 freetype jpeg libpng libtiff webp gettext glib giflib lz4 xz zstd openssl
 
-    - name: Build and bottle
+    - name: Build and bottle unpatched recipe
+      run: |
+        brew install --build-bottle qt5
+        brew bottle qt5
+
+    - name: Build and bottle patched recipe
       run: |
         # Should be redundant:
         # brew tap Cimbali/qt5-macx-arm64
