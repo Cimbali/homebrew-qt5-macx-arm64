@@ -17,15 +17,15 @@ jobs:
 
     - name: Build and bottle unpatched recipe
       run: |
-        brew install --build-bottle qt5
-        brew bottle qt5
+        brew install --build-bottle qt@6
+        brew bottle qt@6
 
     - name: Build and bottle patched recipe
       run: |
         # Should be redundant:
         # brew tap Cimbali/qt5-macx-arm64
 
-        brew install --build-bottle Cimbali/qt5-macx-arm64/qt5
-        brew bottle Cimbali/qt5-macx-arm64/qt5
+        brew install --build-bottle Cimbali/qt5-macx-arm64/qt6
+        brew bottle Cimbali/qt5-macx-arm64/qt6
 
         ls
